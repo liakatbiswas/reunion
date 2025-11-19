@@ -1,8 +1,11 @@
 <div>
-    <h1 class="text-4xl text-gray-900 text-center font-bold">Registration Yourself!</h1>
+    <h1 class="text-4xl text-gray-900 dark:text-white text-center font-bold mb-6">
+        Registration Yourself!
+    </h1>
 
-    <form wire:submit.prevent="submit" class="max-w-6xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-xl  space-y-6">
-        <!-- 2 Column Layout -->
+    <form wire:submit.prevent="submit"
+        class="max-w-6xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-xl shadow space-y-6">
+
         <div class="flex flex-wrap gap-6">
 
             <!-- Name -->
@@ -18,7 +21,7 @@
             <!-- Batch -->
             <div class="w-full md:w-[48%]">
                 <label class="block font-medium mb-1">Batch</label>
-                <input type="text" wire:model="batch"
+                <input type="number" wire:model="batch"
                     class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
                 @error('batch')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
@@ -55,6 +58,16 @@
                 @enderror
             </div>
 
+            <!-- bKash -->
+            <div class="w-full md:w-[48%]">
+                <label class="block font-medium mb-1">bKash Number</label>
+                <input type="tel" wire:model="bKash"
+                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
+                @error('bKash')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
+
             <!-- Email -->
             <div class="w-full md:w-[48%]">
                 <label class="block font-medium mb-1">Email</label>
@@ -65,21 +78,44 @@
                 @enderror
             </div>
 
-            <!-- Member -->
+            <!-- Member Type -->
             <div class="w-full md:w-[48%]">
-                <label class="block font-medium mb-1">Member</label>
-                <input type="number" wire:model="member"
-                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
-                @error('member')
+                <label class="block mb-1 font-medium">Member Type</label>
+
+                <select wire:model.live="member_type"
+                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+
+                    <option value="">-- Select --</option>
+                    <option value="single">একক</option>
+                    <option value="couple">স্বামী–স্ত্রী</option>
+                    <option value="parent_with_children">অভিভাবক + সন্তান</option>
+                    <option value="couple_with_children">স্বামী–স্ত্রী + সন্তান</option>
+                    <option value="children_only">শুধু সন্তান</option>
+
+                </select>
+
+                @error('member_type')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
 
+            <!-- Children Count -->
+            @if (in_array($member_type, ['parent_with_children', 'couple_with_children', 'children_only']))
+                <div class="w-full md:w-[48%]">
+                    <label class="block mb-1 font-medium">সন্তান সংখ্যা</label>
+                    <input type="number" min="0" wire:model.live="children"
+                        class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
+                    @error('children')
+                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
+
             <!-- Amount -->
             <div class="w-full md:w-[48%]">
-                <label class="block font-medium mb-1">Amount</label>
-                <input type="number" wire:model="amount"
-                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
+                <label class="block mb-1 font-medium">Amount</label>
+                <input type="text" wire:model="amount" readonly
+                    class="w-full bg-gray-100 dark:bg-gray-700 dark:text-white rounded-lg" />
                 @error('amount')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
@@ -114,5 +150,4 @@
         </div>
 
     </form>
-
 </div>

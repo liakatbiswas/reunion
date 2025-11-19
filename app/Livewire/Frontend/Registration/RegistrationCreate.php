@@ -17,22 +17,68 @@ class RegistrationCreate extends Component
 
     public $phone;
 
+    public $bKash;
+
     public $email;
 
-    public $member;
-
-    public $amount;
+    public $amount = 0;
 
     public $gender;
 
+    public $member_type;
+
+    public $children = 0;
+
+    // Auto calculate
+    public function updatedMemberType()
+    {
+        $this->calculateAmount();
+    }
+
+    public function updatedChildren()
+    {
+        $this->calculateAmount();
+    }
+
+    public function calculateAmount()
+    {
+        switch ($this->member_type) {
+            case 'single':
+                $this->amount = 2000;
+                break;
+
+            case 'couple':
+                $this->amount = 3500;
+                break;
+
+            case 'parent_with_children':
+                $this->amount = 2000 + $this->children * 1000;
+                break;
+
+            case 'couple_with_children':
+                $this->amount = 3500 + $this->children * 1000;
+                break;
+
+            case 'children_only':
+                $this->amount = $this->children * 1000;
+                break;
+
+            default:
+                $this->amount = 0;
+        }
+    }
+
     protected $rules = [
         'name' => 'required|string|max:255',
-        'batch' => 'required|string|max:50',
+        'batch' => 'required|numeric',
         'address' => 'nullable|string|max:500',
         'occupation' => 'nullable|string|max:255',
         'phone' => 'required|string|max:20',
+        'bKash' => 'required|string|max:20',
         'email' => 'nullable|email|max:255',
-        'member' => 'required|numeric',
+
+        'member_type' => 'required|in:single,couple,parent_with_children,couple_with_children,children_only',
+        'children' => 'nullable|numeric|min:0',
         'amount' => 'required|numeric|min:0',
         'gender' => 'required|in:male,female,other',
     ];

@@ -10,5 +10,5 @@ class Registration extends Model
     /** @use HasFactory<\Database\Factories\RegistrationFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'batch', 'address', 'occupation', 'phone', 'email', 'member', 'amount', 'gender'];
+    protected $fillable = ['name', 'batch', 'address', 'occupation', 'phone', 'bKash', 'email', 'gender', 'member_type', 'children', 'amount'];
 }

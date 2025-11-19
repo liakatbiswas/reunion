@@ -14,14 +14,16 @@ return new class extends Migration
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('batch');
-            $table->text('address')->nullable();
+            $table->string('batch')->nullable();
+            $table->string('address')->nullable();
             $table->string('occupation')->nullable();
-            $table->string('phone')->unique();
-            $table->string('email')->unique()->nullable();
-            $table->string('member');
-            $table->decimal('amount');
-            $table->enum('gender', ['male', 'female', 'other']);
+            $table->string('phone');
+            $table->string('bKash');
+            $table->string('email')->nullable();
+            $table->enum('gender', ['male', 'female', 'other'])->nullable();
+            $table->enum('member_type', ['single', 'couple', 'parent_with_children', 'couple_with_children', 'children_only']);
+            $table->integer('children')->default(0);
+            $table->integer('amount')->default(0);
             $table->timestamps();
         });
     }
