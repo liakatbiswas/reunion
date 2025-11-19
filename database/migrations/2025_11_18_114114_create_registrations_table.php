@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('batch')->nullable();
+            $table->foreignId('batch_id')->nullable()->constrained('batches')->nullOnDelete();
             $table->string('address')->nullable();
             $table->string('occupation')->nullable();
             $table->string('phone');

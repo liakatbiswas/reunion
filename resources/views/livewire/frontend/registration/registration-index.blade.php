@@ -50,7 +50,7 @@
                 @foreach ($registrations as $item)
                     <tr class="hover:bg-gray-100 dark:hover:bg-gray-800">
                         <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $item->name }}</td>
-                        <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $item->batch }}</td>
+                        <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $item->batch->name }}</td>
                         <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $item->address }}</td>
                         <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $item->occupation }}</td>
                         <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $item->phone }}</td>

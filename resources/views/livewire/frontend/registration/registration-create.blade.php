@@ -20,30 +20,53 @@
 
             <!-- Batch -->
             <div class="w-full md:w-[48%]">
-                <label class="block font-medium mb-1">Batch</label>
-                <input type="number" wire:model="batch"
-                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
-                @error('batch')
+                <label>Batch</label>
+                <select wire:model="batch_id" class="w-full border rounded p-2">
+                    <option value="">Select Batch</option>
+                    @foreach ($batches as $batch)
+                        <option value="{{ $batch->id }}">{{ $batch->name }}</option>
+                    @endforeach
+                </select>
+                @error('batch_id')
+                    <span class="text-red-500">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <!-- Member Type -->
+            <div class="w-full md:w-[48%]">
+                <label class="block mb-1 font-medium">Member Type</label>
+                <select wire:model.live="member_type"
+                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+                    <option value="">-- Select --</option>
+                    <option value="single">একক</option>
+                    <option value="couple">স্বামী–স্ত্রী</option>
+                    <option value="parent_with_children">স্বামী বা স্ত্রী + সন্তান</option>
+                    <option value="couple_with_children">স্বামী–স্ত্রী + সন্তান</option>
+                    <option value="children_only">শুধু সন্তান</option>
+                </select>
+                @error('member_type')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Address -->
-            <div class="w-full md:w-[48%]">
-                <label class="block font-medium mb-1">Address</label>
-                <textarea wire:model="address" rows="2"
-                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white"></textarea>
-                @error('address')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
-            </div>
+            <!-- Children Count -->
+            @if (in_array($member_type, ['parent_with_children', 'couple_with_children', 'children_only']))
+                <div class="w-full md:w-[48%]">
+                    <label class="block mb-1 font-medium">সন্তান সংখ্যা</label>
+                    <input type="number" min="0" wire:model.live="children"
+                        class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
+                    @error('children')
+                        <p class="text-red-500 text-sm">{{ $message }}</p>
+                    @enderror
+                </div>
+            @endif
 
-            <!-- Occupation -->
+            <!-- Amount -->
             <div class="w-full md:w-[48%]">
-                <label class="block font-medium mb-1">Occupation</label>
-                <input type="text" wire:model="occupation"
-                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
-                @error('occupation')
+                <label class="block mb-1 font-medium">Amount</label>
+                <input type="text" wire:model="amount" readonly
+                    class="w-full bg-gray-100 dark:bg-gray-700 dark:text-white rounded-lg" />
+                @error('amount')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
@@ -78,45 +101,22 @@
                 @enderror
             </div>
 
-            <!-- Member Type -->
+            <!-- Occupation -->
             <div class="w-full md:w-[48%]">
-                <label class="block mb-1 font-medium">Member Type</label>
-
-                <select wire:model.live="member_type"
-                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
-
-                    <option value="">-- Select --</option>
-                    <option value="single">একক</option>
-                    <option value="couple">স্বামী–স্ত্রী</option>
-                    <option value="parent_with_children">অভিভাবক + সন্তান</option>
-                    <option value="couple_with_children">স্বামী–স্ত্রী + সন্তান</option>
-                    <option value="children_only">শুধু সন্তান</option>
-
-                </select>
-
-                @error('member_type')
+                <label class="block font-medium mb-1">Occupation</label>
+                <input type="text" wire:model="occupation"
+                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
+                @error('occupation')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Children Count -->
-            @if (in_array($member_type, ['parent_with_children', 'couple_with_children', 'children_only']))
-                <div class="w-full md:w-[48%]">
-                    <label class="block mb-1 font-medium">সন্তান সংখ্যা</label>
-                    <input type="number" min="0" wire:model.live="children"
-                        class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
-                    @error('children')
-                        <p class="text-red-500 text-sm">{{ $message }}</p>
-                    @enderror
-                </div>
-            @endif
-
-            <!-- Amount -->
+            <!-- Address -->
             <div class="w-full md:w-[48%]">
-                <label class="block mb-1 font-medium">Amount</label>
-                <input type="text" wire:model="amount" readonly
-                    class="w-full bg-gray-100 dark:bg-gray-700 dark:text-white rounded-lg" />
-                @error('amount')
+                <label class="block font-medium mb-1">Address</label>
+                <textarea wire:model="address" rows="2"
+                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white"></textarea>
+                @error('address')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>

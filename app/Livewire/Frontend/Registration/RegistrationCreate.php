@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Frontend\Registration;
 
+use App\Models\Batch;
 use App\Models\Registration;
 use Livewire\Component;
 
@@ -9,7 +10,7 @@ class RegistrationCreate extends Component
 {
     public $name;
 
-    public $batch;
+    public $batch_id;
 
     public $address;
 
@@ -70,7 +71,7 @@ class RegistrationCreate extends Component
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'batch' => 'required|numeric',
+        'batch_id' => 'required|exists:batches,id',
         'address' => 'nullable|string|max:500',
         'occupation' => 'nullable|string|max:255',
         'phone' => 'required|string|max:20',
@@ -89,6 +90,19 @@ class RegistrationCreate extends Component
 
         Registration::create($validated);
 
+        //   Registration::create([
+        //     'name' => $this->name,
+        //     'batch_id' => $this->batch_id,
+        //     'address' => $this->address,
+        //     'occupation' => $this->occupation,
+        //     'phone' => $this->phone,
+        //     'bKash' => $this->bKash,
+        //     'email' => $this->email,
+        //     'gender' => $this->gender,
+        //     'member_type' => $this->member_type,
+        //     'amount' => $this->amount ?? 0,
+        // ]);
+
         flash()->option('timeout', 2000)->success('Registration Completed Successfully!');
 
         $this->reset();
@@ -98,6 +112,8 @@ class RegistrationCreate extends Component
 
     public function render()
     {
-        return view('livewire.frontend.registration.registration-create');
+        return view('livewire.frontend.registration.registration-create', [
+            'batches' => Batch::orderBy('id', 'desc')->get(),
+        ]);
     }
 }
