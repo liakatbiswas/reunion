@@ -1,5 +1,5 @@
 @if (Route::has('login'))
-    <nav class="max-w-6xl mx-auto flex items-center justify-between px-4">
+    <nav class="mx-auto flex items-center justify-between px-4">
 
         <!-- Logo / Branding -->
         <div class="text-xl font-semibold text-gray-800 dark:text-gray-200">
@@ -25,7 +25,10 @@
                     class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow">
                     Registration List
                 </a>
-
+                <a href="{{ route('batch.index') }}"
+                    class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow">
+                    Batch
+                </a>
                 <a href="{{ route('login') }}" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow">
                     Log in
                 </a>

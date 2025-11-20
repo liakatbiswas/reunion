@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BatchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -9,6 +10,7 @@ Route::get('/', function () {
 });
 
 Route::resource('/registration', RegistrationController::class)->only(['index', 'create']);
+Route::resource('/batch', BatchController::class);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

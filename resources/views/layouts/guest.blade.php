@@ -20,9 +20,11 @@
 <body class="font-sans text-gray-900 antialiased bg-gray-100 dark:bg-gray-900">
 
     <!-- Top Navigation -->
-    <header class="w-full bg-white dark:bg-gray-800 shadow">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            @include('layouts.guest-navigation')
+    <header class="mx-auto px-4 sm:px-6 lg:px-8 py-4 bg-white dark:bg-gray-800 shadow">
+        <div class="sm:px-6 lg:px-8">
+            <div class="dark:bg-gray-800 overflow-hidden sm:rounded-lg">
+                @include('layouts.guest-navigation')
+            </div>
         </div>
     </header>
 
