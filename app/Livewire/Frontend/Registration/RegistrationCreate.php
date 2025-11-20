@@ -3,12 +3,17 @@
 namespace App\Livewire\Frontend\Registration;
 
 use App\Models\Batch;
+use App\Models\District;
+use App\Models\Division;
 use App\Models\Registration;
+use App\Models\Upazila;
 use Livewire\Component;
 
 class RegistrationCreate extends Component
 {
     public $name;
+
+    public $batches;
 
     public $batch_id;
 
@@ -29,6 +34,20 @@ class RegistrationCreate extends Component
     public $member_type;
 
     public $children = 0;
+
+    public $divisions = [];
+
+    public $districts = [];
+
+    public $upazilas = [];
+
+    public $division_id;
+
+    public $district_id;
+
+    public $upazila_id;
+
+    public $village;
 
     // Auto calculate
     public function updatedMemberType()
@@ -69,10 +88,37 @@ class RegistrationCreate extends Component
         }
     }
 
+    public function mount()
+    {
+        $this->batches = Batch::orderBy('name')->get();
+        $this->divisions = Division::orderBy('name')->get();
+        $this->districts = collect(); // initially empty
+        $this->upazilas = collect(); // initially empty
+    }
+
+    public function updatedDivisionId($value)
+    {
+        $this->districts = District::where('division_id', $value)->orderBy('name')->get();
+        $this->district_id = null;
+        $this->upazilas = collect();
+        $this->upazila_id = null;
+    }
+
+    public function updatedDistrictId($value)
+    {
+        $this->upazilas = Upazila::where('district_id', $value)->orderBy('name')->get();
+        $this->upazila_id = null;
+    }
+
     protected $rules = [
         'name' => 'required|string|max:255',
         'batch_id' => 'required|exists:batches,id',
-        'address' => 'nullable|string|max:500',
+
+        'division_id' => 'required',
+        'district_id' => 'required',
+        'upazila_id' => 'required',
+
+        'village' => 'required|string|max:500',
         'occupation' => 'nullable|string|max:255',
         'phone' => 'required|string|max:20',
         'bKash' => 'required|string|max:20',
@@ -112,8 +158,6 @@ class RegistrationCreate extends Component
 
     public function render()
     {
-        return view('livewire.frontend.registration.registration-create', [
-            'batches' => Batch::orderBy('id', 'desc')->get(),
-        ]);
+        return view('livewire.frontend.registration.registration-create');
     }
 }

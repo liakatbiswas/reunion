@@ -112,14 +112,64 @@
             </div>
 
             <!-- Address -->
-            <div class="w-full md:w-[48%]">
-                <label class="block font-medium mb-1">Address</label>
-                <textarea wire:model="address" rows="2"
-                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white"></textarea>
-                @error('address')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+            <div class="w-full md:w-[96%]">
+                <div class="flex items-center gap-4">
+                    <!-- Division -->
+                    <div class="w-full md:w-[24%]">
+                        <label>Division</label>
+                        <select wire:model.live="division_id" class="w-full border rounded p-2">
+                            <option value="">Select Division</option>
+                            @foreach ($divisions as $division)
+                                <option value="{{ $division->id }}">{{ $division->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('division_id')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- District -->
+                    <div class="w-full md:w-[24%]">
+                        <label>District</label>
+                        <select wire:model.live="district_id" class="w-full border rounded p-2"
+                            {{ empty($districts) ? 'disabled' : '' }}>
+                            <option value="">Select District</option>
+                            @foreach ($districts as $district)
+                                <option value="{{ $district->id }}">{{ $district->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('district_id')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- Upazila -->
+                    <div class="w-full md:w-[24%]">
+                        <label>Upazila</label>
+                        <select wire:model.live="upazila_id" class="w-full border rounded p-2"
+                            {{ empty($upazilas) ? 'disabled' : '' }}>
+                            <option value="">Select Upazila</option>
+                            @foreach ($upazilas as $upazila)
+                                <option value="{{ $upazila->id }}">{{ $upazila->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('upazila_id')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="w-full md:w-[24%]">
+                        <label class="block font-medium mb-1">Village</label>
+                        <input type="text" wire:model="village"
+                            class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
+                        @error('village')
+                            <p class="text-red-500 text-sm">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                </div>
             </div>
+
 
             <!-- Gender -->
             <div class="w-full md:w-[48%]">

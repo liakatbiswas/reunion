@@ -15,7 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('batch_id')->nullable()->constrained('batches')->nullOnDelete();
-            $table->string('address')->nullable();
+            // $table->string('address')->nullable();
+
+            // Address related relations
+            $table->foreignId('division_id')->nullable()->constrained('divisions')->nullOnDelete();
+            $table->foreignId('district_id')->nullable()->constrained('districts')->nullOnDelete();
+            $table->foreignId('upazila_id')->nullable()->constrained('upazilas')->nullOnDelete();
+            $table->string('village');
+
             $table->string('occupation')->nullable();
             $table->string('phone');
             $table->string('bKash');

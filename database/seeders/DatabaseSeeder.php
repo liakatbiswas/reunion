@@ -26,6 +26,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             BatchSeeder::class,
+            DivisionSeeder::class,
+            DistrictSeeder::class,
+            UpazilaSeeder::class,
         ]);
 
     }
