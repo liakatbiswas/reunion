@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ParticipantRegistrationController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
@@ -20,6 +21,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/participants', [ParticipantRegistrationController::class, 'index'])->name('participants.index');
 });
 
 require __DIR__.'/auth.php';
