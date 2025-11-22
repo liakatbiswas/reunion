@@ -1,5 +1,17 @@
 <div class="p-6">
 
+    <div class="pb-4">
+        <input type="text" wire:model.live="search" placeholder="Search students...">
+
+        <button wire:click="exportExcel" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
+            Excel </button>
+        <button wire:click="exportPDF" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow"> PDF
+        </button>
+        <button wire:click="exportWord" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
+            Word </button>
+    </div>
+
+
     <x-slot name="head">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/featherlight@1.7.14/release/featherlight.min.css">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -7,10 +19,6 @@
     </x-slot>
 
     <div class="overflow-x-auto rounded-tl-lg rounded-tr-lg">
-
-        <input type="text" wire:model.live="search" placeholder="Search by name or phone..."
-            class="w-[550px] my-4 rounded">
-
 
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-100 dark:bg-gray-800">
@@ -81,16 +89,6 @@
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
                 @foreach ($registrations as $item)
                     <tr class="hover:bg-gray-100 dark:hover:bg-gray-800">
-
-                        {{-- <td class="w-36 p-2">
-                            @if ($item->photo)
-                                <img src="{{ asset('storage/' . $item->photo) }}" alt="{{ $item->name }}"
-                                    class="aspect-square w-36 object-cover rounded border">
-                            @else
-                                <img src="{{ asset('no_image.jpg') }}" alt="{{ $item->name }}"
-                                    class="aspect-square w-36 object-cover rounded border">
-                            @endif
-                        </td> --}}
 
                         <td class="w-20 p-2">
                             @php
