@@ -8,38 +8,15 @@ use App\Models\Division;
 use App\Models\Registration;
 use App\Models\Upazila;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class RegistrationCreate extends Component
 {
+    use WithFileUploads;
+
     public $name;
 
-    public $batches;
-
     public $batch_id;
-
-    public $address;
-
-    public $occupation;
-
-    public $phone;
-
-    public $bKash;
-
-    public $email;
-
-    public $amount = 0;
-
-    public $gender;
-
-    public $member_type;
-
-    public $children = 0;
-
-    public $divisions = [];
-
-    public $districts = [];
-
-    public $upazilas = [];
 
     public $division_id;
 
@@ -49,7 +26,62 @@ class RegistrationCreate extends Component
 
     public $village;
 
-    // Auto calculate
+    public $post_office;
+
+    public $status = 'pending';
+
+    public $occupation;
+
+    public $phone;
+
+    public $photo;
+
+    public $bKash;
+
+    public $email;
+
+    public $gender;
+
+    public $member_type;
+
+    public $children = 0;
+
+    public $amount = 0;
+
+    public $note;
+
+    public $batches;
+
+    public $divisions;
+
+    public $districts = [];
+
+    public $upazilas = [];
+
+    public function mount()
+    {
+        $this->batches = Batch::orderBy('name')->get();
+        $this->divisions = Division::orderBy('name')->get();
+        $this->districts = collect();
+        $this->upazilas = collect();
+    }
+
+    // Cascading Dropdown
+    public function updatedDivisionId($value)
+    {
+        $this->districts = District::where('division_id', $value)->orderBy('name')->get();
+        $this->district_id = null;
+        $this->upazilas = collect();
+        $this->upazila_id = null;
+    }
+
+    public function updatedDistrictId($value)
+    {
+        $this->upazilas = Upazila::where('district_id', $value)->orderBy('name')->get();
+        $this->upazila_id = null;
+    }
+
+    // Auto Calculations
     public function updatedMemberType()
     {
         $this->calculateAmount();
@@ -72,11 +104,11 @@ class RegistrationCreate extends Component
                 break;
 
             case 'parent_with_children':
-                $this->amount = 2000 + $this->children * 1000;
+                $this->amount = 2000 + ($this->children * 1000);
                 break;
 
             case 'couple_with_children':
-                $this->amount = 3500 + $this->children * 1000;
+                $this->amount = 3500 + ($this->children * 1000);
                 break;
 
             case 'children_only':
@@ -88,70 +120,84 @@ class RegistrationCreate extends Component
         }
     }
 
-    public function mount()
-    {
-        $this->batches = Batch::orderBy('name')->get();
-        $this->divisions = Division::orderBy('name')->get();
-        $this->districts = collect(); // initially empty
-        $this->upazilas = collect(); // initially empty
-    }
-
-    public function updatedDivisionId($value)
-    {
-        $this->districts = District::where('division_id', $value)->orderBy('name')->get();
-        $this->district_id = null;
-        $this->upazilas = collect();
-        $this->upazila_id = null;
-    }
-
-    public function updatedDistrictId($value)
-    {
-        $this->upazilas = Upazila::where('district_id', $value)->orderBy('name')->get();
-        $this->upazila_id = null;
-    }
-
+    // Validation Rules
     protected $rules = [
-        'name' => 'required|string|max:255',
+        'name' => 'required|max:255',
         'batch_id' => 'required|exists:batches,id',
 
         'division_id' => 'required',
         'district_id' => 'required',
         'upazila_id' => 'required',
 
-        'village' => 'required|string|max:500',
-        'occupation' => 'nullable|string|max:255',
-        'phone' => 'required|string|max:20',
-        'bKash' => 'required|string|max:20',
-        'email' => 'nullable|email|max:255',
+        'village' => 'required|max:255',
+        'post_office' => 'nullable|max:255',
+
+        'occupation' => 'nullable|max:255',
+        'phone' => 'required|max:20|unique:registrations,phone',
+
+        'photo' => 'nullable|image|max:2048',
+
+        'bKash' => 'required|max:20',
+        'email' => 'nullable|email',
+
+        'gender' => 'required|in:male,female,other',
 
         'member_type' => 'required|in:single,couple,parent_with_children,couple_with_children,children_only',
         'children' => 'nullable|numeric|min:0',
         'amount' => 'required|numeric|min:0',
-        'gender' => 'required|in:male,female,other',
+
+        'note' => 'nullable|max:2000',
     ];
 
     public function submit()
     {
         $validated = $this->validate();
 
-        Registration::create($validated);
+        // ক্রমানুসার ID তৈরি করা
+        $last = Registration::latest('id')->first();
+        $number = $last ? ((int) substr($last->regi_id, -4)) + 1 : 1;
+        $regi_id = 'NJJHS25'.str_pad($number, 4, '0', STR_PAD_LEFT);
 
-        //   Registration::create([
-        //     'name' => $this->name,
-        //     'batch_id' => $this->batch_id,
-        //     'address' => $this->address,
-        //     'occupation' => $this->occupation,
-        //     'phone' => $this->phone,
-        //     'bKash' => $this->bKash,
-        //     'email' => $this->email,
-        //     'gender' => $this->gender,
-        //     'member_type' => $this->member_type,
-        //     'amount' => $this->amount ?? 0,
-        // ]);
+        // -----------------------------------
+        // Image Upload Fix
+        // -----------------------------------
+        $path = null;
+
+        if ($this->photo) {
+            // $originalName = $this->photo->getClientOriginalName();
+            // $fileName = 'user-'.now()->format('YmdHis').'-'.$originalName;
+            $fileName = 'user-'.time().'.'.$this->photo->getClientOriginalExtension();
+            $path = $this->photo->storeAs('photos', $fileName, 'public');
+        }
+
+        // -----------------------------------
+        // Save to Database
+        // -----------------------------------
+        Registration::create([
+            'name' => $this->name,
+            'regi_id' => $regi_id,
+            'batch_id' => $this->batch_id,
+            'division_id' => $this->division_id,
+            'district_id' => $this->district_id,
+            'upazila_id' => $this->upazila_id,
+            'village' => $this->village,
+            'post_office' => $this->post_office,
+            'status' => 'pending',
+            'occupation' => $this->occupation,
+            'phone' => $this->phone,
+            'photo' => $path, // <-- Fixed
+            'bKash' => $this->bKash,
+            'email' => $this->email,
+            'gender' => $this->gender,
+            'member_type' => $this->member_type,
+            'children' => $this->children,
+            'amount' => $this->amount,
+            'note' => $this->note,
+        ]);
 
         flash()->option('timeout', 2000)->success('Registration Completed Successfully!');
 
-        $this->reset();
+        $this->resetExcept(['batches', 'divisions']);
 
         return redirect()->route('registration.index');
     }

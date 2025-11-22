@@ -10,7 +10,7 @@ class Division extends Model
     /** @use HasFactory<\Database\Factories\DivisionFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = ['name', 'bn_name', 'url'];
 
     public function districts()
     {

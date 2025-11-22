@@ -2,9 +2,16 @@
     <h1 class="text-4xl text-gray-900 dark:text-white text-center font-bold mb-6">
         Registration Yourself!
     </h1>
+    <div class="text-center text-sm">
+        <p> Single: একক ব্যক্তি, কোনো পরিবার নেই। </p>
+        <p> Husband & Wife (Couple): শুধু স্বামী ও স্ত্রী, সন্তান নেই। </p>
+        <p> Parent + Children: একজন পিতামাতা (বাবা বা মা) + সন্তানরা। </p>
+        <p> Husband & Wife + Children: স্বামী–স্ত্রী এবং তাদের সন্তানরা। </p>
+        <p> Children Only: কেবল সন্তানরা, পিতামাতা নেই। </p>
+    </div>
 
-    <form wire:submit.prevent="submit"
-        class="max-w-6xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-xl shadow space-y-6">
+    <form wire:submit.prevent="submit" class="max-w-6xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-xl shadow space-y-6"
+        enctype="multipart/form-data">
 
         <div class="flex flex-wrap gap-6">
 
@@ -38,18 +45,18 @@
                 <select wire:model.live="member_type"
                     class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
                     <option value="">-- Select --</option>
-                    <option value="single">একক</option>
-                    <option value="couple">স্বামী–স্ত্রী</option>
-                    <option value="parent_with_children">স্বামী বা স্ত্রী + সন্তান</option>
-                    <option value="couple_with_children">স্বামী–স্ত্রী + সন্তান</option>
-                    <option value="children_only">শুধু সন্তান</option>
+                    <option value="single">Single</option>
+                    <option value="couple">Husband & Wife</option>
+                    <option value="couple_with_children">Husband & Wife + Children</option>
+                    <option value="parent_with_children">Parent + Children</option>
+                    <option value="children_only">Children Only</option>
                 </select>
                 @error('member_type')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Children Count -->
+            <!-- Children -->
             @if (in_array($member_type, ['parent_with_children', 'couple_with_children', 'children_only']))
                 <div class="w-full md:w-[48%]">
                     <label class="block mb-1 font-medium">সন্তান সংখ্যা</label>
@@ -112,10 +119,11 @@
             </div>
 
             <!-- Address -->
-            <div class="w-full md:w-[96%]">
+            <div class="w-full md:w-[98%]">
                 <div class="flex items-center gap-4">
+
                     <!-- Division -->
-                    <div class="w-full md:w-[24%]">
+                    <div class="w-full md:w-[20%]">
                         <label>Division</label>
                         <select wire:model.live="division_id" class="w-full border rounded p-2">
                             <option value="">Select Division</option>
@@ -129,10 +137,9 @@
                     </div>
 
                     <!-- District -->
-                    <div class="w-full md:w-[24%]">
+                    <div class="w-full md:w-[20%]">
                         <label>District</label>
-                        <select wire:model.live="district_id" class="w-full border rounded p-2"
-                            {{ empty($districts) ? 'disabled' : '' }}>
+                        <select wire:model.live="district_id" class="w-full border rounded p-2">
                             <option value="">Select District</option>
                             @foreach ($districts as $district)
                                 <option value="{{ $district->id }}">{{ $district->name }}</option>
@@ -144,10 +151,9 @@
                     </div>
 
                     <!-- Upazila -->
-                    <div class="w-full md:w-[24%]">
+                    <div class="w-full md:w-[20%]">
                         <label>Upazila</label>
-                        <select wire:model.live="upazila_id" class="w-full border rounded p-2"
-                            {{ empty($upazilas) ? 'disabled' : '' }}>
+                        <select wire:model.live="upazila_id" class="w-full border rounded p-2">
                             <option value="">Select Upazila</option>
                             @foreach ($upazilas as $upazila)
                                 <option value="{{ $upazila->id }}">{{ $upazila->name }}</option>
@@ -158,7 +164,18 @@
                         @enderror
                     </div>
 
-                    <div class="w-full md:w-[24%]">
+                    <!-- Post Office -->
+                    <div class="w-full md:w-[20%]">
+                        <label class="block font-medium mb-1">Post Office</label>
+                        <input type="text" wire:model="post_office"
+                            class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
+                        @error('post_office')
+                            <p class="text-red-500 text-sm">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Village -->
+                    <div class="w-full md:w-[20%]">
                         <label class="block font-medium mb-1">Village</label>
                         <input type="text" wire:model="village"
                             class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
@@ -168,25 +185,63 @@
                     </div>
 
                 </div>
+
             </div>
 
-
             <!-- Gender -->
+            <label class="block font-medium mb-2">Gender: </label>
             <div class="w-full md:w-[48%]">
-                <label class="block font-medium mb-2">Gender</label>
                 <div class="flex items-center gap-6">
-                    <label class="flex items-center gap-2">
-                        <input type="radio" wire:model="gender" value="male"> Male
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="radio" wire:model="gender" value="female"> Female
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="radio" wire:model="gender" value="other"> Other
-                    </label>
+                    <label><input type="radio" wire:model="gender" value="male"> Male</label>
+                    <label><input type="radio" wire:model="gender" value="female"> Female</label>
+                    <label><input type="radio" wire:model="gender" value="other"> Other</label>
                 </div>
                 @error('gender')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Status -->
+            <!-- While registering, a user's status will always be pending
+            & Admin will active him -->
+
+            <!-- Note -->
+            <div class="w-full">
+                <label class="block font-medium mb-1">Notes</label>
+                <textarea wire:model="note" rows="3"
+                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white"></textarea>
+                @error('note')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Photo Upload -->
+            <div class="w-full">
+                <div class="flex h-32">
+                    <div>
+                        <label class="font-semibold">Upload Photo</label>
+                        <input type="file" wire:model="photo" class="mt-2">
+                    </div>
+
+                    <div>
+                        <!-- Loading state -->
+                        <div wire:loading wire:target="photo" class="text-blue-500">
+                            Uploading...
+                        </div>
+
+                        <!-- Preview Image -->
+                        @if ($photo)
+                            <div class="mt-4">
+                                <p class="font-semibold">Preview:</p>
+                                <img src="{{ $photo->temporaryUrl() }}"
+                                    class="w-32 h-32 object-cover rounded border">
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                @error('photo')
+                    <span class="text-red-500">{{ $message }}</span>
                 @enderror
             </div>
 

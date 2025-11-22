@@ -10,7 +10,7 @@ class Upazila extends Model
     /** @use HasFactory<\Database\Factories\UpazilaFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = ['district_id', 'name', 'bn_name', 'url'];
 
     public function district()
     {

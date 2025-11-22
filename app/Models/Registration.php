@@ -10,7 +10,27 @@ class Registration extends Model
     /** @use HasFactory<\Database\Factories\RegistrationFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'batch_id', 'division_id', 'district_id', 'upazila_id', 'village', 'occupation', 'phone', 'bKash', 'email', 'gender', 'member_type', 'children', 'amount'];
+    protected $fillable = [
+        'name',
+        'regi_id',
+        'batch_id',
+        'division_id',
+        'district_id',
+        'upazila_id',
+        'village',
+        'post_office',
+        'status',
+        'occupation',
+        'phone',
+        'photo',
+        'bKash',
+        'email',
+        'gender',
+        'member_type',
+        'children',
+        'amount',
+        'note',
+    ];
 
     public function batch()
     {
