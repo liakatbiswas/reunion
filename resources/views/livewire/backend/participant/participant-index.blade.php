@@ -1,14 +1,20 @@
 <div class="p-6">
 
-    <div class="pb-4">
+    <div class="flex items-center space-x-4 mb-4">
         <input type="text" wire:model.live="search" placeholder="Search students...">
 
-        <button wire:click="exportExcel" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
-            Excel </button>
-        <button wire:click="exportPDF" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow"> PDF
-        </button>
-        <button wire:click="exportWord" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
-            Word </button>
+        @include('components.wire-loading-btn', [
+            'methodName' => 'exportExcel',
+            'label' => 'Excel',
+        ])
+        @include('components.wire-loading-btn', [
+            'methodName' => 'exportPDF',
+            'label' => 'PDF',
+        ])
+        @include('components.wire-loading-btn', [
+            'methodName' => 'exportWord',
+            'label' => 'Word',
+        ])
     </div>
 
 
