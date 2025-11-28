@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Frontend\Registration;
 
+use App\Mail\RegistrationSuccessfull;
 use App\Models\Batch;
 use App\Models\District;
 use App\Models\Division;
 use App\Models\Registration;
 use App\Models\Upazila;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -173,7 +175,7 @@ class RegistrationCreate extends Component
         // -----------------------------------
         // Save to Database
         // -----------------------------------
-        Registration::create([
+        $credentials = Registration::create([
             'name' => $this->name,
             'regi_id' => $regi_id,
             'batch_id' => $this->batch_id,
@@ -196,6 +198,8 @@ class RegistrationCreate extends Component
         ]);
 
         flash()->option('timeout', 2000)->success('Registration Completed Successfully!');
+
+        Mail::to('nasirabad.ghschool@gmail.com')->send(new RegistrationSuccessfull($credentials));
 
         $this->resetExcept(['batches', 'divisions']);
 

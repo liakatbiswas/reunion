@@ -135,4 +135,9 @@
             </tbody>
         </table>
     </div>
+
+    <div class="py-4">
+        {{ $registrations->links() }}
+    </div>
+
 </div>

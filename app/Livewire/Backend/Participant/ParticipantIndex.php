@@ -80,7 +80,7 @@ class ParticipantIndex extends Component
                 ->orWhereHas('batch', function ($q) {
                     $q->where('name', 'like', "%{$this->search}%");
                 })
-                ->paginate(10),
+                ->latest()->paginate(),
         ]);
     }
 }
