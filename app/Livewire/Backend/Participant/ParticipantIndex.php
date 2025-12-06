@@ -42,7 +42,10 @@ class ParticipantIndex extends Component
         $participants = Registration::query()
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%");
+                    ->orWhere('email', 'like', "%{$this->search}%")
+                    ->orWhereHas('batch', function ($q) {
+                        $q->where('name', 'like', "%{$this->search}%");
+                    });
             })
             ->get();
 
