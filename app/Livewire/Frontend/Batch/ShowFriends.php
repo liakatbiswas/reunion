@@ -16,11 +16,18 @@ class ShowFriends extends Component
 
     public function render()
     {
-        $batch = Batch::with('registrations')->findOrFail($this->batch_id);
+        $batch = Batch::with('registrations')->find($this->batch_id);
+
+        if (! $batch) {
+            return view('livewire.frontend.batch.show-friends', [
+                'batch' => null,
+                'friends' => collect(), // empty collection
+            ]);
+        }
 
         return view('livewire.frontend.batch.show-friends', [
             'batch' => $batch,
-            'friends' => $batch->registrations()->latest()->paginate(10),
+            'friends' => $batch->registrations()->orderBy('name', 'ASC')->get(),
         ]);
     }
 }
