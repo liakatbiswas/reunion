@@ -21,9 +21,9 @@
                         পরিচিতদের রেজিস্ট্রেশন করার জন্য যোগাযোগ করি।
                         ধন্যবাদ
                     </p>
-                    <a href="#"
-                        class="inline-flex items-center bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm py-2.5 focus:outline-none">
-                        Read more
+                    <a href="{{ route('show.all.friends', $batch->id) }}"
+                        class="inline-flex items-center bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm py-2.5 hover:underline focus:outline-none">
+                        Show all Friends
                         <svg class="w-4 h-4 ms-1.5 rtl:rotate-180 -me-0.5" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                             viewBox="0 0 24 24">
