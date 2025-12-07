@@ -21,15 +21,15 @@ return new class extends Migration
             $table->foreignId('district_id')->nullable()->constrained('districts')->nullOnDelete();
             $table->foreignId('upazila_id')->nullable()->constrained('upazilas')->nullOnDelete();
             // Address
-            $table->string('village');
+            $table->string('village')->nullable();
             $table->string('post_office')->nullable();
             // Status
             $table->enum('status', ['pending', 'active'])->default('pending');
             // Personal details
             $table->string('occupation')->nullable();
-            $table->string('phone', 20)->unique();
+            $table->string('phone', 20)->nullable()->unique();
             $table->string('photo')->nullable();
-            $table->string('bKash', 20);
+            $table->string('bKash', 20)->nullable();
             $table->string('email')->nullable();
             $table->enum('gender', ['male', 'female', 'other']);
             // Family / Members
