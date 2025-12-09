@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('division_id')->nullable()->constrained('divisions')->nullOnDelete();
             $table->foreignId('district_id')->nullable()->constrained('districts')->nullOnDelete();
             $table->foreignId('upazila_id')->nullable()->constrained('upazilas')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             // Address
             $table->string('village')->nullable();
             $table->string('post_office')->nullable();
@@ -27,14 +28,12 @@ return new class extends Migration
             $table->enum('status', ['pending', 'active'])->default('pending');
             // Personal details
             $table->string('occupation')->nullable();
-            $table->string('phone', 20)->nullable()->unique();
+            $table->string('phone', 20)->nullable();
             $table->string('photo')->nullable();
             $table->string('bKash', 20)->nullable();
             $table->string('email')->nullable();
             $table->enum('gender', ['male', 'female', 'other']);
             // Family / Members
-            $table->enum('member_type', ['single', 'couple', 'parent_with_children', 'couple_with_children', 'children_only']);
-            $table->integer('children')->default(0);
             $table->integer('amount')->default(0);
             // Notes
             $table->text('note')->nullable();

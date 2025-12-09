@@ -10,6 +10,7 @@ class RegistrationSeeder extends Seeder
 {
     public function run(): void
     {
+        // 50 Bangladeshi names
         $bdNames = [
             'Rahim Uddin', 'Karim Ali', 'Abdul Kader', 'Hasan Mahmud', 'Rakib Hasan',
             'Sabbir Hossain', 'Nazmul Islam', 'Ariful Haque', 'Shakil Ahmed', 'Jubayer Hossain',
@@ -23,20 +24,21 @@ class RegistrationSeeder extends Seeder
             'Yasmin Akter', 'Nadia Hasan', 'Shakera Sultana', 'Samia Rahman', 'Sumaya Binte Ali',
         ];
 
+        // Bangladeshi mobile number prefixes
         $bdPhonePrefixes = ['017', '018', '019', '016', '015'];
 
         for ($i = 1; $i <= 50; $i++) {
 
             $name = $bdNames[$i - 1];
 
-            // Create BD-style emails
+            // Generate BD style email
             $email = Str::slug($name).rand(10, 99).'@gmail.com';
 
             Registration::create([
                 'name' => $name,
                 'regi_id' => 'REG-'.str_pad($i, 4, '0', STR_PAD_LEFT),
 
-                // Foreign keys - random existing IDs
+                // Foreign keys
                 'batch_id' => rand(1, 5),
                 'division_id' => rand(1, 8),
                 'district_id' => rand(1, 64),
@@ -49,35 +51,29 @@ class RegistrationSeeder extends Seeder
                 // Status
                 'status' => fake()->randomElement(['pending', 'active']),
 
-                // Personal info
+                // Occupation
                 'occupation' => fake()->randomElement([
                     'Student', 'Teacher', 'Farmer', 'Businessman', 'Engineer', 'Doctor',
                     'Housewife', 'Driver', 'Freelancer', 'Service Holder',
                 ]),
+                'user_id' => 1,
 
+                // Phone numbers
                 'phone' => $bdPhonePrefixes[array_rand($bdPhonePrefixes)].rand(10000000, 99999999),
-
-                'photo' => null,
-
                 'bKash' => $bdPhonePrefixes[array_rand($bdPhonePrefixes)].rand(10000000, 99999999),
 
+                // Email + Gender
                 'email' => $email,
-
                 'gender' => fake()->randomElement(['male', 'female', 'other']),
 
-                // Family / Members
-                'member_type' => fake()->randomElement([
-                    'single',
-                    'couple',
-                    'parent_with_children',
-                    'couple_with_children',
-                    'children_only',
-                ]),
-                'children' => rand(0, 4),
+                // Money field
                 'amount' => rand(500, 5000),
 
-                // Notes
+                // Optional note
                 'note' => fake()->optional()->sentence(),
+
+                // Photo (null for now)
+                'photo' => null,
             ]);
         }
     }

@@ -17,6 +17,7 @@ class Registration extends Model
         'division_id',
         'district_id',
         'upazila_id',
+        'user_id',
         'village',
         'post_office',
         'status',
@@ -26,8 +27,6 @@ class Registration extends Model
         'bKash',
         'email',
         'gender',
-        'member_type',
-        'children',
         'amount',
         'note',
     ];
@@ -50,5 +49,10 @@ class Registration extends Model
     public function upazila()
     {
         return $this->belongsTo(Upazila::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
