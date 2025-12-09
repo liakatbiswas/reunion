@@ -55,7 +55,7 @@
 
                     <td class="border p-2 whitespace-nowrap">{{ $item->name }}</td>
 
-                    <td class="border p-2">{{ $item->regi_id }}</td>
+                    <td class="border whitespace-nowrap p-2">{{ $item->regi_id }}</td>
 
                     <td class="border p-2">{{ $item->batch->name ?? 'N/A' }}</td>
 

@@ -39,20 +39,25 @@ class ParticipantIndex extends Component
     public function exportPDF()
     {
         // Fetch participants based on search query
-        $participants = Registration::query()
+        $participants = Registration::with(['batch', 'division', 'district', 'upazila', 'user'])
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', "%{$this->search}%")
                     ->orWhere('email', 'like', "%{$this->search}%")
-                    ->orWhereHas('batch', function ($q) {
-                        $q->where('name', 'like', "%{$this->search}%");
-                    });
+                    ->orWhere('phone', 'like', "%{$this->search}%")
+                    ->orWhereHas('batch', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+                    ->orWhereHas('division', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+                    ->orWhereHas('district', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+                    ->orWhereHas('upazila', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
             })
+            ->join('batches', 'registrations.batch_id', '=', 'batches.id')
+            ->orderBy('batches.name', 'asc')
+            ->select('registrations.*')
             ->get();
 
-        // Load PDF view with participants
+        // Load PDF view
         $pdf = Pdf::loadView('backend.exports.participants', compact('participants'));
 
-        // Stream the PDF file for download
+        // Download PDF
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
         }, 'participants.pdf');
@@ -86,15 +91,19 @@ class ParticipantIndex extends Component
      */
     public function render()
     {
-        return view('livewire.backend.participant.participant-index', [
-            'registrations' => Registration::where('name', 'like', "%{$this->search}%")
-                ->orWhere('email', 'like', "%{$this->search}%")
-                ->orWhere('regi_id', 'like', "%{$this->search}%")
-                ->orWhere('phone', 'like', "%{$this->search}%")
-                ->orWhereHas('batch', function ($q) {
-                    $q->where('name', 'like', "%{$this->search}%");
-                })
-                ->latest()->paginate(),
-        ]);
+        $registrations = Registration::with(['batch', 'division', 'district', 'upazila', 'user'])
+            ->when($this->search, function ($q) {
+                $q->where('name', 'like', "%{$this->search}%")
+                    ->orWhere('email', 'like', "%{$this->search}%")
+                    ->orWhere('regi_id', 'like', "%{$this->search}%")
+                    ->orWhere('phone', 'like', "%{$this->search}%")
+                    ->orWhereHas('batch', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
+            })
+            ->join('batches', 'registrations.batch_id', '=', 'batches.id')
+            ->orderBy('batches.name', 'asc')
+            ->select('registrations.*')
+            ->paginate(15);
+
+        return view('livewire.backend.participant.participant-index', compact('registrations'));
     }
 }

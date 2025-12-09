@@ -7,8 +7,8 @@
 
     <style>
         @page {
-            size: A4;
-            margin: 10mm 10mm 10mm 10mm;
+            size: legal landscape;
+            margin: 10mm;
         }
 
         * {
@@ -19,34 +19,33 @@
 
         body {
             font-family: 'Noto Sans Bengali', 'DejaVu Sans', sans-serif;
-            font-size: 8pt;
-            line-height: 1.3;
-            color: #000;
+            font-size: 9px;
+            line-height: 1.2;
+            padding: 10px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
             border-bottom: 2px solid #333;
         }
 
         .header h1 {
-            font-size: 18pt;
-            margin-bottom: 5px;
+            font-size: 12px;
+            margin-bottom: 3px;
             color: #2c3e50;
         }
 
         .header p {
-            font-size: 9pt;
+            font-size: 9px;
             color: #555;
         }
 
         .meta-info {
             display: table;
             width: 100%;
-            margin-bottom: 10px;
-            font-size: 8pt;
+            margin-bottom: 5px;
         }
 
         .meta-info>div {
@@ -64,8 +63,9 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             page-break-inside: auto;
+            font-size: 9px;
         }
 
         thead {
@@ -85,34 +85,30 @@
             background-color: #34495e;
             color: #fff;
             font-weight: bold;
-            padding: 6px 3px;
+            padding: 5px;
             text-align: left;
-            font-size: 7pt;
             border: 1px solid #2c3e50;
+            font-size: 9px;
         }
 
         td {
-            padding: 5px 3px;
+            padding: 4px;
             border: 1px solid #bdc3c7;
-            font-size: 7pt;
             vertical-align: top;
+            font-size: 9px;
         }
 
         tbody tr:nth-child(even) {
             background-color: #f8f9fa;
         }
 
-        tbody tr:hover {
-            background-color: #e8f4f8;
-        }
-
         .status-badge {
             display: inline-block;
-            padding: 2px 6px;
+            padding: 1px 4px;
             border-radius: 3px;
-            font-size: 6pt;
             font-weight: bold;
             text-transform: uppercase;
+            font-size: 8px;
         }
 
         .status-active {
@@ -139,7 +135,7 @@
 
         .photo-cell {
             text-align: center;
-            padding: 3px;
+            padding: 1px;
         }
 
         .photo-cell img {
@@ -156,8 +152,8 @@
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 7pt;
-            padding: 5px;
+            font-size: 8px;
+            padding: 3px;
             border-top: 1px solid #bdc3c7;
             background-color: #fff;
         }
@@ -184,94 +180,77 @@
 
         .summary-box {
             background-color: #ecf0f1;
-            padding: 8px;
-            margin-bottom: 10px;
+            padding: 4px;
+            margin-bottom: 5px;
             border-radius: 4px;
             display: table;
             width: 100%;
+            font-size: 9px;
         }
 
         .summary-item {
             display: table-cell;
-            padding: 0 10px;
-            font-size: 8pt;
+            padding: 0 6px;
         }
 
         .summary-item strong {
             color: #2c3e50;
         }
-
-        .compact th {
-            padding: 4px 2px;
-            font-size: 6.5pt;
-        }
-
-        .compact td {
-            padding: 3px 2px;
-            font-size: 6.5pt;
-        }
     </style>
 </head>
 
-<body style="padding: 20px">
+<body>
+
     <!-- Header -->
     <div class="header">
         <h1>Registration List</h1>
         <p>Complete Registration Records</p>
     </div>
 
-    <!-- Meta Information -->
+    <!-- Meta Info -->
     <div class="meta-info">
-        <div class="left">
-            <strong>Generated:</strong> {{ now()->format('d M Y, h:i A') }}
-        </div>
-        <div class="right">
-            <strong>Total Records:</strong> {{ count($participants) }}
-        </div>
+        <div class="left"><strong>Generated:</strong> {{ now()->format('d M Y, h:i A') }}</div>
+        <div class="right"><strong>Total Records:</strong> {{ $participants->count() }}</div>
     </div>
 
-    <!-- Summary Box -->
+    <!-- Summary -->
     <div class="summary-box">
-        <div class="summary-item">
-            <strong>Active:</strong> {{ $participants->where('status', 'active')->count() }}
+        <div class="summary-item"><strong>Active:</strong> {{ $participants->where('status', 'active')->count() }}</div>
+        <div class="summary-item"><strong>Pending:</strong> {{ $participants->where('status', 'pending')->count() }}
         </div>
-        <div class="summary-item">
-            <strong>Pending:</strong> {{ $participants->where('status', 'pending')->count() }}
-        </div>
-        <div class="summary-item">
-            <strong>Male:</strong> {{ $participants->where('gender', 'male')->count() }}
-        </div>
-        <div class="summary-item">
-            <strong>Female:</strong> {{ $participants->where('gender', 'female')->count() }}
-        </div>
-        <div class="summary-item">
-            <strong>Total Amount:</strong> {{ number_format($participants->sum('amount')) }}
-        </div>
+        <div class="summary-item"><strong>Male:</strong> {{ $participants->where('gender', 'male')->count() }}</div>
+        <div class="summary-item"><strong>Female:</strong> {{ $participants->where('gender', 'female')->count() }}</div>
+        <div class="summary-item"><strong>Total Amount:</strong> {{ number_format($participants->sum('amount')) }}</div>
     </div>
 
     <!-- Main Table -->
-    <table class="compact">
+    <table>
         <thead>
             <tr>
-                <th style="width: 3%;">#</th>
-                <th style="width: 5%;">Photo</th>
-                <th style="width: 8%;">Regi ID</th>
-                <th style="width: 12%;">Name</th>
-                <th style="width: 8%;">Phone</th>
-                <th style="width: 8%;">Batch</th>
-                <th style="width: 10%;">Address</th>
-                <th style="width: 6%;">Gender</th>
-                <th style="width: 8%;">Member Type</th>
-                <th style="width: 5%;">Children</th>
-                <th style="width: 7%;">Amount</th>
-                <th style="width: 6%;">Status</th>
+                <th>#</th>
+                <th>Photo</th>
+                <th>Regi ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Batch</th>
+                <th>Division</th>
+                <th>District</th>
+                <th>Upazila</th>
+                <th>Village</th>
+                <th>Post Office</th>
+                <th>Occupation</th>
+                <th>Gender</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Registered By</th>
+                <th>Note</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($participants as $index => $registration)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-
                     <td class="photo-cell">
                         @if ($registration->photo)
                             <img src="{{ public_path('storage/' . $registration->photo) }}" alt="Photo">
@@ -279,20 +258,17 @@
                             -
                         @endif
                     </td>
-
-                    <td class="nowrap text-bold">{{ $registration->regi_id }}</td>
+                    <td class="text-bold">{{ $registration->regi_id }}</td>
                     <td>{{ $registration->name }}</td>
-                    <td class="nowrap">{{ $registration->phone }}</td>
+                    <td>{{ $registration->phone }}</td>
+                    <td>{{ $registration->email }}</td>
                     <td>{{ $registration->batch?->name ?? '-' }}</td>
-
-                    <td>
-                        {{ $registration->village }},
-                        {{ $registration->upazila?->name ?? '' }}
-                        @if ($registration->district)
-                            , {{ $registration->district->name }}
-                        @endif
-                    </td>
-
+                    <td>{{ $registration->division?->name ?? '-' }}</td>
+                    <td>{{ $registration->district?->name ?? '-' }}</td>
+                    <td>{{ $registration->upazila?->name ?? '-' }}</td>
+                    <td>{{ $registration->village }}</td>
+                    <td>{{ $registration->post_office }}</td>
+                    <td>{{ $registration->occupation }}</td>
                     <td class="text-center">
                         <span class="gender-{{ $registration->gender }}">
                             @if ($registration->gender == 'male')
@@ -304,52 +280,23 @@
                             @endif
                         </span>
                     </td>
-
-                    <td style="font-size: 6pt;">
-                        @switch($registration->member_type)
-                            @case('single')
-                                Single
-                            @break
-
-                            @case('couple')
-                                Couple
-                            @break
-
-                            @case('parent_with_children')
-                                Parent+Kids
-                            @break
-
-                            @case('couple_with_children')
-                                Couple+Kids
-                            @break
-
-                            @case('children_only')
-                                Kids Only
-                            @break
-                        @endswitch
-                    </td>
-
-                    <td class="text-center">{{ $registration->children }}</td>
-
                     <td class="text-right">{{ number_format($registration->amount) }}</td>
-
                     <td class="text-center">
                         <span class="status-badge status-{{ $registration->status }}">
-                            {{ $registration->status }}
+                            {{ ucfirst($registration->status) }}
                         </span>
                     </td>
+                    <td>{{ $registration->user?->name ?? '-' }}</td>
+                    <td>{{ $registration->note }}</td>
                 </tr>
             @endforeach
         </tbody>
 
         <tfoot>
             <tr>
-                <td colspan="9" class="text-right text-bold">Total:</td>
-
-                <td class="text-right text-bold">{{ number_format($participants->sum('children')) }}</td>
+                <td colspan="14" class="text-right text-bold">Total Amount:</td>
                 <td class="text-right text-bold">{{ number_format($participants->sum('amount')) }}</td>
-
-                <td colspan="1"></td>
+                <td colspan="3"></td>
             </tr>
         </tfoot>
     </table>
