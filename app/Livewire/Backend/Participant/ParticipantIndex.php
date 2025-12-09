@@ -70,6 +70,17 @@ class ParticipantIndex extends Component
         return $export->download();
     }
 
+    // Toggle status method
+    public function toggleStatus($id)
+    {
+        $reg = Registration::findOrFail($id);
+
+        $reg->status = $reg->status === 'active' ? 'pending' : 'active';
+        $reg->save();
+
+        session()->flash('success', 'Status changed to '.ucfirst($reg->status).'!');
+    }
+
     /**
      * Render the component view with paginated and filtered participant data.
      */
