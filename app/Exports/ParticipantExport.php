@@ -19,19 +19,26 @@ class ParticipantExport implements FromCollection, WithHeadings, WithMapping
     // Data Collection
     public function collection()
     {
-        $query = Registration::with(['batch', 'division', 'district', 'upazila']);
+        $query = Registration::with(['batch', 'division', 'district', 'upazila', 'user']);
 
         if ($this->search) {
             $query->where('name', 'like', "%{$this->search}%")
                 ->orWhere('email', 'like', "%{$this->search}%")
                 ->orWhere('regi_id', 'like', "%{$this->search}%")
-                ->orWhereHas('batch', function ($q) {
-                    $q->where('name', 'like', "%{$this->search}%");
-                })
-                ->orWhere('phone', 'like', "%{$this->search}%");
+                ->orWhere('phone', 'like', "%{$this->search}%")
+                ->orWhere('bKash', 'like', "%{$this->search}%")
+                ->orWhereHas('batch', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->orWhereHas('division', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->orWhereHas('district', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->orWhereHas('upazila', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+                ->orWhereHas('user', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
         }
 
-        return $query->get();
+        // Order by batch name
+        return $query->join('batches', 'registrations.batch_id', '=', 'batches.id')
+            ->orderBy('batches.name', 'asc')
+            ->select('registrations.*')
+            ->get();
     }
 
     // Map each row to Excel format
@@ -39,18 +46,23 @@ class ParticipantExport implements FromCollection, WithHeadings, WithMapping
     {
         return [
             $registration->name,
-            $registration->email,
-            $registration->phone,
             $registration->regi_id,
             $registration->batch?->name ?? '',
             $registration->division?->name ?? '',
             $registration->district?->name ?? '',
             $registration->upazila?->name ?? '',
+            $registration->user?->name ?? '',
+            $registration->village,
+            $registration->post_office,
+            $registration->status,
             $registration->occupation,
+            $registration->phone,
+            $registration->photo ? asset('storage/'.$registration->photo) : '',
+            $registration->bKash,
+            $registration->email,
             ucfirst($registration->gender),
-            ucfirst(str_replace('_', ' ', $registration->member_type)),
-            $registration->children,
             $registration->amount,
+            $registration->note,
         ];
     }
 
@@ -58,19 +70,24 @@ class ParticipantExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            'Student Name',
-            'Email Address',
-            'Phone Number',
+            'Name',
             'Registration ID',
             'Batch',
             'Division',
             'District',
             'Upazila',
+            'User',
+            'Village',
+            'Post Office',
+            'Status',
             'Occupation',
+            'Phone',
+            'Photo',
+            'bKash',
+            'Email',
             'Gender',
-            'Member Type',
-            'Children',
             'Amount',
+            'Note',
         ];
     }
 }
