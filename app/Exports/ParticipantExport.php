@@ -4,12 +4,21 @@ namespace App\Exports;
 
 use App\Models\Registration;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithDrawings;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-class ParticipantExport implements FromCollection, WithHeadings, WithMapping
+class ParticipantExport implements FromCollection, WithColumnWidths, WithDrawings, WithEvents, WithHeadings, WithMapping
 {
     protected $search;
+
+    protected $registrations;
+
+    protected $rowNumber = 2; // Starting from row 2 (after heading)
 
     public function __construct($search = null)
     {
@@ -35,10 +44,12 @@ class ParticipantExport implements FromCollection, WithHeadings, WithMapping
         }
 
         // Order by batch name
-        return $query->join('batches', 'registrations.batch_id', '=', 'batches.id')
+        $this->registrations = $query->join('batches', 'registrations.batch_id', '=', 'batches.id')
             ->orderBy('batches.name', 'asc')
             ->select('registrations.*')
             ->get();
+
+        return $this->registrations;
     }
 
     // Map each row to Excel format
@@ -57,7 +68,7 @@ class ParticipantExport implements FromCollection, WithHeadings, WithMapping
             $registration->status,
             $registration->occupation,
             $registration->phone,
-            $registration->photo ? asset('storage/'.$registration->photo) : '',
+            '', // Photo column - will be filled by drawings
             $registration->bKash,
             $registration->email,
             ucfirst($registration->gender),
@@ -76,7 +87,7 @@ class ParticipantExport implements FromCollection, WithHeadings, WithMapping
             'Division',
             'District',
             'Upazila',
-            'User',
+            'Registered By',
             'Village',
             'Post Office',
             'Status',
@@ -88,6 +99,100 @@ class ParticipantExport implements FromCollection, WithHeadings, WithMapping
             'Gender',
             'Amount',
             'Note',
+        ];
+    }
+
+    // Add images to Excel
+    public function drawings()
+    {
+        $drawings = [];
+        $row = 2; // Start from row 2 (after heading)
+
+        foreach ($this->registrations as $registration) {
+            if ($registration->photo) {
+                $photoPath = storage_path('app/public/'.$registration->photo);
+
+                // Check if file exists
+                if (file_exists($photoPath)) {
+                    $drawing = new Drawing;
+                    $drawing->setName('Photo');
+                    $drawing->setDescription('Participant Photo');
+                    $drawing->setPath($photoPath);
+                    $drawing->setHeight(50);              // Set image height in pixels
+                    $drawing->setCoordinates('M'.$row); // Column M (Photo column)
+                    $drawing->setOffsetX(5);
+                    $drawing->setOffsetY(5);
+
+                    $drawings[] = $drawing;
+                }
+            }
+            $row++;
+        }
+
+        return $drawings;
+    }
+
+    // Set column widths
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 20, // Name
+            'B' => 18, // Registration ID
+            'C' => 15, // Batch
+            'D' => 15, // Division
+            'E' => 15, // District
+            'F' => 15, // Upazila
+            'G' => 20, // User
+            'H' => 15, // Village
+            'I' => 15, // Post Office
+            'J' => 12, // Status
+            'K' => 15, // Occupation
+            'L' => 15, // Phone
+            'M' => 15, // Photo
+            'N' => 15, // bKash
+            'O' => 25, // Email
+            'P' => 10, // Gender
+            'Q' => 12, // Amount
+            'R' => 30, // Note
+        ];
+    }
+
+    // Set row heights for images
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+
+                // Set row height for all data rows
+                $rowCount = $this->registrations->count() + 1; // +1 for heading
+                for ($row = 2; $row <= $rowCount; $row++) {
+                    $sheet->getRowDimension($row)->setRowHeight(60); // Set row height
+                }
+
+                // Style heading row
+                $sheet->getStyle('A1:R1')->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                        'size' => 12,
+                    ],
+                    'fill' => [
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => 'E0E0E0'],
+                    ],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                ]);
+
+                // Center align all cells
+                $sheet->getStyle('A1:R'.$rowCount)->applyFromArray([
+                    'alignment' => [
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                ]);
+            },
         ];
     }
 }
