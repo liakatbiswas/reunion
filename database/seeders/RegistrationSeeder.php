@@ -67,7 +67,7 @@ class RegistrationSeeder extends Seeder
                 'gender' => fake()->randomElement(['male', 'female', 'other']),
 
                 // Money field
-                'amount' => rand(500, 5000),
+                'amount' => fake()->randomElement([800, 1000]),
 
                 // Optional note
                 'note' => fake()->optional()->sentence(),
