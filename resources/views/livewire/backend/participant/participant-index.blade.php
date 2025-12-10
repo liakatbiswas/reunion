@@ -33,7 +33,6 @@
                     <th class="border p-2">Name</th>
                     <th class="border p-2">Regi ID</th>
                     <th class="border p-2">Batch</th>
-
                     <th class="border p-2">Division</th>
                     <th class="border p-2">District</th>
                     <th class="border p-2">Upazila</th>
@@ -109,11 +108,18 @@
 
                         <td class="border p-2">{{ $item->note }}</td>
                         <td class="border p-2">
-                            <button wire:click="toggleStatus({{ $item->id }})"
-                                class="px-3 py-1 rounded 
+                            <div class="flex items-center justify-between">
+                                <button wire:click="toggleStatus({{ $item->id }})"
+                                    class="px-3 py-1 rounded 
                                         {{ $item->status === 'active' ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-blue-500 text-white hover:bg-blue-600' }}">
-                                {{ $item->status === 'active' ? 'Pending' : 'Active' }}
-                            </button>
+                                    {{ $item->status === 'active' ? 'Pending' : 'Active' }}
+                                </button>
+
+                                <a href="{{ route('participants.edit', $item->id) }}"
+                                    class="px-2 py-1 bg-green-500 text-white rounded-md shadow hover:bg-green-600 transition font-medium">
+                                    @include('components.icons.edit')
+                                </a>
+                            </div>
                         </td>
 
                     </tr>

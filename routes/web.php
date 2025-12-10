@@ -25,7 +25,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/participants', [ParticipantRegistrationController::class, 'index'])->name('participants.index');
+    // Route::get('/participants', [ParticipantRegistrationController::class, 'index'])->name('participants.index');
+    Route::resource('/participants', ParticipantRegistrationController::class);
 
     Route::get('/account/total', [TotalCalculationController::class, 'total'])->name('account.total');
     Route::get('/account/800', [TotalCalculationController::class, 'show800'])->name('account.show800');
