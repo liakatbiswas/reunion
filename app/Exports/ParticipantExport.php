@@ -18,66 +18,71 @@ class ParticipantExport implements FromCollection, WithColumnWidths, WithDrawing
 
     protected $registrations;
 
-    protected $rowNumber = 2; // Starting from row 2 (after heading)
-
     public function __construct($search = null)
     {
-        $this->search = $search;
+        $this->search = trim($search);
     }
 
-    // Data Collection
+    // Fetch and filter data
     public function collection()
     {
-        $query = Registration::with(['batch', 'division', 'district', 'upazila', 'user']);
+        $query = Registration::query()
+            ->join('batches', 'registrations.batch_id', '=', 'batches.id')
+            ->join('divisions', 'registrations.division_id', '=', 'divisions.id')
+            ->join('districts', 'registrations.district_id', '=', 'districts.id')
+            ->join('upazilas', 'registrations.upazila_id', '=', 'upazilas.id')
+            ->leftJoin('users', 'registrations.user_id', '=', 'users.id')
+            ->when($this->search, function ($q) {
+                $q->where(function ($x) {
+                    $x->where('registrations.name', 'like', "%{$this->search}%")
+                        ->orWhere('registrations.regi_id', 'like', "%{$this->search}%")
+                        ->orWhere('registrations.email', 'like', "%{$this->search}%")
+                        ->orWhere('registrations.phone', 'like', "%{$this->search}%")
+                        ->orWhere('registrations.bKash', 'like', "%{$this->search}%")
 
-        if ($this->search) {
-            $query->where('name', 'like', "%{$this->search}%")
-                ->orWhere('email', 'like', "%{$this->search}%")
-                ->orWhere('regi_id', 'like', "%{$this->search}%")
-                ->orWhere('phone', 'like', "%{$this->search}%")
-                ->orWhere('bKash', 'like', "%{$this->search}%")
-                ->orWhereHas('batch', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                ->orWhereHas('division', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                ->orWhereHas('district', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                ->orWhereHas('upazila', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                ->orWhereHas('user', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
-        }
-
-        // Order by batch name
-        $this->registrations = $query->join('batches', 'registrations.batch_id', '=', 'batches.id')
+                        ->orWhere('batches.name', 'like', "%{$this->search}%")
+                        ->orWhere('divisions.name', 'like', "%{$this->search}%")
+                        ->orWhere('districts.name', 'like', "%{$this->search}%")
+                        ->orWhere('upazilas.name', 'like', "%{$this->search}%")
+                        ->orWhere('users.name', 'like', "%{$this->search}%");
+                });
+            })
             ->orderBy('batches.name', 'asc')
             ->select('registrations.*')
             ->get();
 
+        // load relationships for mapping()
+        $this->registrations = $query->load(['batch', 'division', 'district', 'upazila', 'user']);
+
         return $this->registrations;
     }
 
-    // Map each row to Excel format
-    public function map($registration): array
+    // Map rows
+    public function map($reg): array
     {
         return [
-            $registration->name,
-            $registration->regi_id,
-            $registration->batch?->name ?? '',
-            $registration->division?->name ?? '',
-            $registration->district?->name ?? '',
-            $registration->upazila?->name ?? '',
-            $registration->user?->name ?? '',
-            $registration->village,
-            $registration->post_office,
-            $registration->status,
-            $registration->occupation,
-            $registration->phone,
-            '', // Photo column - will be filled by drawings
-            $registration->bKash,
-            $registration->email,
-            ucfirst($registration->gender),
-            $registration->amount,
-            $registration->note,
+            $reg->name,
+            $reg->regi_id,
+            $reg->batch?->name ?? '',
+            $reg->division?->name ?? '',
+            $reg->district?->name ?? '',
+            $reg->upazila?->name ?? '',
+            $reg->user?->name ?? '',
+            $reg->village,
+            $reg->post_office,
+            $reg->status,
+            $reg->occupation,
+            $reg->phone,
+            '', // Photo column
+            $reg->bKash,
+            $reg->email,
+            ucfirst($reg->gender),
+            $reg->amount,
+            $reg->note,
         ];
     }
 
-    // Column Headings
+    // Headings
     public function headings(): array
     {
         return [
@@ -102,27 +107,25 @@ class ParticipantExport implements FromCollection, WithColumnWidths, WithDrawing
         ];
     }
 
-    // Add images to Excel
+    // Add images
     public function drawings()
     {
         $drawings = [];
-        $row = 2; // Start from row 2 (after heading)
+        $row = 2;
 
-        foreach ($this->registrations as $registration) {
-            if ($registration->photo) {
-                $photoPath = storage_path('app/public/'.$registration->photo);
+        foreach ($this->registrations as $reg) {
+            if ($reg->photo) {
+                $path = storage_path('app/public/'.$reg->photo);
 
-                // Check if file exists
-                if (file_exists($photoPath)) {
+                if (file_exists($path)) {
                     $drawing = new Drawing;
                     $drawing->setName('Photo');
                     $drawing->setDescription('Participant Photo');
-                    $drawing->setPath($photoPath);
-                    $drawing->setHeight(50);              // Set image height in pixels
-                    $drawing->setCoordinates('M'.$row); // Column M (Photo column)
+                    $drawing->setPath($path);
+                    $drawing->setHeight(60);
+                    $drawing->setCoordinates('M'.$row);
                     $drawing->setOffsetX(5);
-                    $drawing->setOffsetY(5);
-
+                    $drawing->setOffsetY(3);
                     $drawings[] = $drawing;
                 }
             }
@@ -132,64 +135,42 @@ class ParticipantExport implements FromCollection, WithColumnWidths, WithDrawing
         return $drawings;
     }
 
-    // Set column widths
+    // Column widths
     public function columnWidths(): array
     {
         return [
-            'A' => 20, // Name
-            'B' => 18, // Registration ID
-            'C' => 15, // Batch
-            'D' => 15, // Division
-            'E' => 15, // District
-            'F' => 15, // Upazila
-            'G' => 20, // User
-            'H' => 15, // Village
-            'I' => 15, // Post Office
-            'J' => 12, // Status
-            'K' => 15, // Occupation
-            'L' => 15, // Phone
-            'M' => 15, // Photo
-            'N' => 15, // bKash
-            'O' => 25, // Email
-            'P' => 10, // Gender
-            'Q' => 12, // Amount
-            'R' => 30, // Note
+            'A' => 20, 'B' => 18, 'C' => 15, 'D' => 15,
+            'E' => 15, 'F' => 15, 'G' => 20, 'H' => 15,
+            'I' => 15, 'J' => 12, 'K' => 15, 'L' => 15,
+            'M' => 15, 'N' => 15, 'O' => 25, 'P' => 10,
+            'Q' => 12, 'R' => 30,
         ];
     }
 
-    // Set row heights for images
+    // Styling
     public function registerEvents(): array
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
+
                 $sheet = $event->sheet->getDelegate();
 
-                // Set row height for all data rows
-                $rowCount = $this->registrations->count() + 1; // +1 for heading
-                for ($row = 2; $row <= $rowCount; $row++) {
-                    $sheet->getRowDimension($row)->setRowHeight(60); // Set row height
+                $rowCount = $this->registrations->count() + 1;
+
+                for ($i = 2; $i <= $rowCount; $i++) {
+                    $sheet->getRowDimension($i)->setRowHeight(70);
                 }
 
-                // Style heading row
+                // heading style
                 $sheet->getStyle('A1:R1')->applyFromArray([
-                    'font' => [
-                        'bold' => true,
-                        'size' => 12,
-                    ],
-                    'fill' => [
-                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                        'startColor' => ['rgb' => 'E0E0E0'],
-                    ],
+                    'font' => ['bold' => true],
                     'alignment' => [
                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                     ],
-                ]);
-
-                // Center align all cells
-                $sheet->getStyle('A1:R'.$rowCount)->applyFromArray([
-                    'alignment' => [
-                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    'fill' => [
+                        'fillType' => 'solid',
+                        'startColor' => ['rgb' => 'E0E0E0'],
                     ],
                 ]);
             },

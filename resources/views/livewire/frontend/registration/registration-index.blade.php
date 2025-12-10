@@ -5,8 +5,8 @@
         <script src="https://cdn.jsdelivr.net/npm/featherlight@1.7.14/release/featherlight.min.js"></script>
     </x-slot>
 
-    <h1 class="text-center font-bold text-4xl pb-4 text-red-950"> Search Yourself! </h1>
-    <div class="mb-4">
+    <h1 class="font-bold text-2xl pb-4"> Search Yourself! </h1>
+    <div class="w-[50%] mb-4">
         <input type="text" wire:model.live="search" id="search-box" class="w-full border px-3 py-2 rounded"
             placeholder="Search by name, regi id, phone, bKash...">
     </div>
@@ -95,7 +95,7 @@
                     <td class="border p-2">{{ $item->amount }}</td>
 
                     <!-- Relation: user -->
-                    <td class="border p-2">{{ $item->user->name ?? 'N/A' }}</td>
+                    <td class="border whitespace-nowrap p-2">{{ $item->user->name ?? 'N/A' }}</td>
 
                     <td class="border p-2">{{ $item->note }}</td>
                 </tr>

@@ -38,29 +38,38 @@ class ParticipantIndex extends Component
      */
     public function exportPDF()
     {
-        // Fetch participants based on search query
-        $participants = Registration::with(['batch', 'division', 'district', 'upazila', 'user'])
-            ->when($this->search, function ($q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%")
-                    ->orWhere('phone', 'like', "%{$this->search}%")
-                    ->orWhereHas('batch', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                    ->orWhereHas('division', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                    ->orWhereHas('district', fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-                    ->orWhereHas('upazila', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
-            })
+        $search = trim($this->search);
+
+        $participants = Registration::query()
             ->join('batches', 'registrations.batch_id', '=', 'batches.id')
+            ->join('divisions', 'registrations.division_id', '=', 'divisions.id')
+            ->join('districts', 'registrations.district_id', '=', 'districts.id')
+            ->join('upazilas', 'registrations.upazila_id', '=', 'upazilas.id')
+            ->leftJoin('users', 'registrations.user_id', '=', 'users.id')
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q2) use ($search) {
+                    $q2->where('registrations.name', 'like', "%{$search}%")
+                        ->orWhere('registrations.regi_id', 'like', "%{$search}%")
+                        ->orWhere('registrations.email', 'like', "%{$search}%")
+                        ->orWhere('registrations.phone', 'like', "%{$search}%")
+                        ->orWhere('registrations.bKash', 'like', "%{$search}%")
+                        ->orWhere('batches.name', 'like', "%{$search}%")
+                        ->orWhere('divisions.name', 'like', "%{$search}%")
+                        ->orWhere('districts.name', 'like', "%{$search}%")
+                        ->orWhere('upazilas.name', 'like', "%{$search}%")
+                        ->orWhere('users.name', 'like', "%{$search}%");
+                });
+            })
             ->orderBy('batches.name', 'asc')
             ->select('registrations.*')
             ->get();
 
-        // Load PDF view
         $pdf = Pdf::loadView('backend.exports.participants', compact('participants'));
 
-        // Download PDF
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
         }, 'participants.pdf');
+
     }
 
     /**
@@ -91,19 +100,49 @@ class ParticipantIndex extends Component
      */
     public function render()
     {
-        $registrations = Registration::with(['batch', 'division', 'district', 'upazila', 'user'])
-            ->when($this->search, function ($q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%")
-                    ->orWhere('regi_id', 'like', "%{$this->search}%")
-                    ->orWhere('phone', 'like', "%{$this->search}%")
-                    ->orWhereHas('batch', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
-            })
+        // $registrations = Registration::with(['batch', 'division', 'district', 'upazila', 'user'])
+        //     ->when($this->search, function ($q) {
+        //         $q->where('name', 'like', "%{$this->search}%")
+        //             ->orWhere('email', 'like', "%{$this->search}%")
+        //             ->orWhere('regi_id', 'like', "%{$this->search}%")
+        //             ->orWhere('phone', 'like', "%{$this->search}%")
+        //             ->orWhereHas('batch', fn($q) => $q->where('name', 'like', "%{$this->search}%"));
+        //     })
+        //     ->join('batches', 'registrations.batch_id', '=', 'batches.id')
+        //     ->orderBy('batches.name', 'asc')
+        //     ->select('registrations.*')
+        //     ->paginate(15);
+
+        // return view('livewire.backend.participant.participant-index', compact('registrations'));
+
+        $search = trim($this->search);
+
+        $registrations = Registration::query()
             ->join('batches', 'registrations.batch_id', '=', 'batches.id')
+            ->join('divisions', 'registrations.division_id', '=', 'divisions.id')
+            ->join('districts', 'registrations.district_id', '=', 'districts.id')
+            ->join('upazilas', 'registrations.upazila_id', '=', 'upazilas.id')
+            ->leftJoin('users', 'registrations.user_id', '=', 'users.id')
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($x) use ($search) {
+                    $x->where('registrations.name', 'like', "%{$search}%")
+                        ->orWhere('registrations.regi_id', 'like', "%{$search}%")
+                        ->orWhere('registrations.email', 'like', "%{$search}%")
+                        ->orWhere('registrations.phone', 'like', "%{$search}%")
+                        ->orWhere('registrations.bKash', 'like', "%{$search}%")
+
+                        ->orWhere('batches.name', 'like', "%{$search}%")
+                        ->orWhere('divisions.name', 'like', "%{$search}%")
+                        ->orWhere('districts.name', 'like', "%{$search}%")
+                        ->orWhere('upazilas.name', 'like', "%{$search}%")
+                        ->orWhere('users.name', 'like', "%{$search}%");
+                });
+            })
             ->orderBy('batches.name', 'asc')
             ->select('registrations.*')
             ->paginate(15);
 
         return view('livewire.backend.participant.participant-index', compact('registrations'));
+
     }
 }
