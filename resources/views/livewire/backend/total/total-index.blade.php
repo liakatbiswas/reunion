@@ -4,24 +4,39 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <div class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg">
-            <h3 class="font-semibold">Total Amount</h3>
-            <p class="text-3xl">{{ $totalAmount }}</p>
-        </div>
-
-        <a href="{{ route('account.show800') }}">
-            <div class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg">
-                <h3 class="font-semibold">800 TK Paid</h3>
-                <p>Count: <strong>{{ $eightHundredCount }}</strong></p>
-                <p>Total: <strong>{{ $eightHundredTotal }}</strong></p>
+        <a href="{{ route('participants.index') }}" class="group">
+            <div
+                class="px-4 py-3 bg-green-400 hover:bg-green-500 transition dark:bg-green-600 dark:hover:bg-green-700 shadow rounded-lg">
+                <h3 class="font-semibold text-gray-800 dark:text-white">Total Amount</h3>
+                <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ $totalAmount }}</p>
+                <p class="font-bold">Tk.</p>
+                <p class="text-sm text-red-700 dark:text-gray-200 mt-2 opacity-0 group-hover:opacity-100 transition">
+                    সকল তালিকা দেখতে ক্লিক করুন →
+                </p>
             </div>
         </a>
 
-        <a href="{{ route('account.show1000') }}">
-            <div class="p-4 bg-white dark:bg-gray-800 shadow rounded-lg">
-                <h3 class="font-semibold">1000 TK Paid</h3>
-                <p>Count: <strong>{{ $thousandCount }}</strong></p>
-                <p>Total: <strong>{{ $thousandTotal }}</strong></p>
+        <a href="{{ route('account.show800') }}" class="group">
+            <div
+                class="p-4 bg-gray-200 hover:bg-green-400 transition dark:bg-gray-800 dark:hover:bg-green-600 shadow rounded-lg">
+                <h3 class="font-semibold text-gray-800 dark:text-white">800 TK Paid</h3>
+                <p class="text-gray-700 dark:text-gray-300">Count: <strong>{{ $eightHundredCount }}</strong></p>
+                <p class="text-gray-700 dark:text-gray-300">Total: <strong>{{ $eightHundredTotal }}</strong></p>
+                <p class="text-sm text-red-600 dark:text-blue-400 mt-2 opacity-0 group-hover:opacity-100 transition">
+                    লিস্ট দেখতে ক্লিক করুন →
+                </p>
+            </div>
+        </a>
+
+        <a href="{{ route('account.show1000') }}" class="group">
+            <div
+                class="p-4 bg-gray-200 hover:bg-green-400 transition dark:bg-gray-800 dark:hover:bg-green-600 shadow rounded-lg">
+                <h3 class="font-semibold text-gray-800 dark:text-white">1000 TK Paid</h3>
+                <p class="text-gray-700 dark:text-gray-300">Count: <strong>{{ $thousandCount }}</strong></p>
+                <p class="text-gray-700 dark:text-gray-300">Total: <strong>{{ $thousandTotal }}</strong></p>
+                <p class="text-sm text-red-600 dark:text-blue-400 mt-2 opacity-0 group-hover:opacity-100 transition">
+                    লিস্ট দেখতে ক্লিক করুন →
+                </p>
             </div>
         </a>
 
