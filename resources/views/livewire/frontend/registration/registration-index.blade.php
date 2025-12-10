@@ -14,6 +14,7 @@
     <table class="w-full border border-gray-300 text-sm">
         <thead>
             <tr class="bg-gray-100 text-left">
+                <th class="border p-2">ID</th>
                 <th class="border p-2">Photo</th>
                 <th class="border p-2">Name</th>
                 <th class="border p-2">Regi ID</th>
@@ -38,9 +39,9 @@
         </thead>
 
         <tbody>
-            @foreach ($registrations as $item)
+            @foreach ($registrations as $index => $item)
                 <tr class="border">
-
+                    <td class="border p-2">{{ $index + 1 }}</td>
                     <td class="w-20 p-2">
                         @php
                             $img = $item->photo ? asset('storage/' . $item->photo) : asset('no_image.jpg');
