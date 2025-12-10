@@ -69,18 +69,6 @@
                                     class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wider">
                                     Gender
                                 </th>
-                                <th
-                                    class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wider">
-                                    Member Type
-                                </th>
-                                <th
-                                    class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wider">
-                                    Children
-                                </th>
-                                <th
-                                    class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wider">
-                                    Amount
-                                </th>
                             </tr>
                         </thead>
 
@@ -128,10 +116,6 @@
                                     </td>
                                     <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ ucfirst($item->gender) }}
                                     </td>
-                                    <td class="px-6 whitespace-nowrap py-4 text-gray-800 dark:text-gray-200">
-                                        {{ ucfirst(str_replace('_', ' ', $item->member_type)) }}</td>
-                                    <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $item->children }}</td>
-                                    <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ $item->amount }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
