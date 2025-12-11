@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('donors.index')" :active="request()->routeIs('donors.*')">
                         {{ __('Donors') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                        {{ __('Register') }}
+                    </x-nav-link>
                 </div>
             </div>
 
