@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ParticipantRegistrationController;
 use App\Http\Controllers\BatchController;
+use App\Http\Controllers\DonorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ShowAllRegisteredController;
@@ -31,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/total', [TotalCalculationController::class, 'total'])->name('account.total');
     Route::get('/account/800', [TotalCalculationController::class, 'show800'])->name('account.show800');
     Route::get('/account/1000', [TotalCalculationController::class, 'show1000'])->name('account.show1000');
+
+    Route::resource('/donors', DonorController::class);
 });
 
 require __DIR__.'/auth.php';
