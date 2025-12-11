@@ -119,12 +119,26 @@ class RegistrationCreate extends Component
         $number = $last ? ((int) substr($last->regi_id, -4)) + 1 : 1;
         $regi_id = 'NJJHS25'.str_pad($number, 4, '0', STR_PAD_LEFT);
 
+        // // Image Upload
+        // $path = null;
+
+        // if ($this->photo) {
+        //     $fileName = 'user-'.time().'.'.$this->photo->getClientOriginalExtension();
+        //     $path = $this->photo->storeAs('photos', $fileName, 'public');
+        // }
+
         // Image Upload
         $path = null;
 
         if ($this->photo) {
+            // File name create
             $fileName = 'user-'.time().'.'.$this->photo->getClientOriginalExtension();
+            // Store uploaded photo
             $path = $this->photo->storeAs('photos', $fileName, 'public');
+            // Delete Livewire temporary file
+            if (file_exists($this->photo->getRealPath())) {
+                unlink($this->photo->getRealPath());
+            }
         }
 
         // Save to Database

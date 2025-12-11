@@ -69,14 +69,34 @@
             </div>
 
             <!-- Amount -->
-            <div class="w-full md:w-[96%]">
+            <div class="w-full md:w-[48%]">
                 <label class="block font-medium mb-1 text-gray-700 dark:text-gray-200">Donation Amount</label>
-                <input type="number" wire:model="donation_amount" min="800" max="1000"
+                <input type="number" wire:model="donation_amount"
                     class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
                 @error('donation_amount')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>
+
+            <!-- Donation Type -->
+            <div class="w-full md:w-[48%]">
+                <label class="block font-medium mb-1 text-gray-700 dark:text-gray-200">Donation Type</label>
+
+                <select wire:model="donation_type"
+                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+                    <option value="">Select Type</option>
+                    <option value="Platinum">Platinum Sponsor</option>
+                    <option value="Gold">Gold Sponsor</option>
+                    <option value="Silver">Silver Sponsor</option>
+                    <option value="Bronze">Bronze Sponsor</option>
+                    <option value="General">General Donor</option>
+                </select>
+
+                @error('donation_type')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
+
 
             <!-- Note -->
             <div class="w-full">

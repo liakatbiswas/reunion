@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Livewire\Backend\Donor;
+namespace App\Livewire\Frontend\Donor;
 
 use App\Models\Donor;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class DonorIndex extends Component
+class DonerIndex extends Component
 {
     use WithPagination;
 
@@ -18,18 +17,6 @@ class DonorIndex extends Component
     public function updatingSearch()
     {
         $this->resetPage();
-    }
-
-    public function delete($id)
-    {
-        $donor = Donor::find($id);
-        if ($donor) {
-            if ($donor->photo && Storage::disk('public')->exists($donor->photo)) {
-                Storage::disk('public')->delete($donor->photo);
-            }
-            $donor->delete();
-        }
-        session()->flash('success', 'Donor deleted successfully!');
     }
 
     public function render()
@@ -43,9 +30,9 @@ class DonorIndex extends Component
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('address', 'like', "%{$search}%");
             })
-            ->latest()
+            ->orderBy('donation_amount', 'desc')
             ->paginate($this->perPage);
 
-        return view('livewire.backend.donor.donor-index', compact('donors'));
+        return view('livewire.frontend.donor.doner-index', compact('donors'));
     }
 }

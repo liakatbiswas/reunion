@@ -69,11 +69,29 @@
             </div>
 
             <!-- Amount -->
-            <div class="w-full md:w-[96%]">
+            <div class="w-full md:w-[48%]">
                 <label class="block font-medium mb-1 text-gray-700 dark:text-gray-200">Donation Amount</label>
                 <input type="number" wire:model="donation_amount" min="800" max="100000"
                     class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
                 @error('donation_amount')
+                    <p class="text-red-500 text-sm">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- Donation Type (Update Form) -->
+            <div class="w-full md:w-[48%]">
+                <label class="block font-medium mb-1 text-gray-700 dark:text-gray-200">Donation Type</label>
+                <select wire:model="donation_type"
+                    class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+                    <option value="">Select Type</option>
+                    <option value="Platinum" {{ $donation_type == 'Platinum' ? 'selected' : '' }}>Platinum Sponsor
+                    </option>
+                    <option value="Gold" {{ $donation_type == 'Gold' ? 'selected' : '' }}>Gold Sponsor</option>
+                    <option value="Silver" {{ $donation_type == 'Silver' ? 'selected' : '' }}>Silver Sponsor</option>
+                    <option value="Bronze" {{ $donation_type == 'Bronze' ? 'selected' : '' }}>Bronze Sponsor</option>
+                    <option value="General" {{ $donation_type == 'General' ? 'selected' : '' }}>General Donor</option>
+                </select>
+                @error('donation_type')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>

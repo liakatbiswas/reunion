@@ -23,6 +23,7 @@
                     <th class="border px-3 py-2">Email</th>
                     <th class="border px-3 py-2">Address</th>
                     <th class="border px-3 py-2">Donation</th>
+                    <th class="border px-3 py-2">Donation Type</th>
                     <th class="border px-3 py-2">Note</th>
                     <th class="border px-3 py-2">Actions</th>
                 </tr>
@@ -52,6 +53,7 @@
                         <td class="border px-3 py-2 font-bold text-green-700">
                             {{ number_format($donor->donation_amount, 2) }}
                         </td>
+                        <td class="border px-3 py-2">{{ $donor->donation_type }}</td>
 
                         <td class="border px-3 py-2">
                             {{ Str::limit($donor->note, 25) }}

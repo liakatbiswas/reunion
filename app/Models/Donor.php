@@ -18,6 +18,7 @@ class Donor extends Model
         'email',
         'address',
         'donation_amount',
+        'donation_type',
         'photo',
         'note',
     ];

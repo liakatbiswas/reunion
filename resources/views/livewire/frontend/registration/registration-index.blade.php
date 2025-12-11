@@ -103,4 +103,8 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="py-4">
+        {{ $registrations->links() }}
+    </div>
 </div>

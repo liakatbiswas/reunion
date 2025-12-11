@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->text('address')->nullable();
             $table->decimal('donation_amount', 12, 2);
+            $table->string('donation_type');
             $table->string('photo')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();

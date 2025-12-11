@@ -24,6 +24,8 @@ class DonorCreate extends Component
 
     public $donation_amount;
 
+    public $donation_type;
+
     public $photo;
 
     public $note;
@@ -38,14 +40,26 @@ class DonorCreate extends Component
             'email' => 'nullable',
             'address' => 'nullable',
             'donation_amount' => 'required|numeric',
+            'donation_type' => 'required',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'note' => 'nullable',
         ]);
 
+        // // PHOTO Upload
+        // if ($this->photo) {
+        //     $fileName = 'donor-'.time().'.'.$this->photo->getClientOriginalExtension();
+        //     $data['photo'] = $this->photo->storeAs('donors/photos', $fileName, 'public');
+        // }
+
         // PHOTO Upload
         if ($this->photo) {
             $fileName = 'donor-'.time().'.'.$this->photo->getClientOriginalExtension();
+            // Save to storage
             $data['photo'] = $this->photo->storeAs('donors/photos', $fileName, 'public');
+            // Delete Livewire temporary file
+            if (file_exists($this->photo->getRealPath())) {
+                unlink($this->photo->getRealPath());
+            }
         }
 
         Donor::create($data);
