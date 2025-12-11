@@ -71,7 +71,7 @@
             <!-- Amount -->
             <div class="w-full md:w-[48%]">
                 <label class="block font-medium mb-1 text-gray-700 dark:text-gray-200">Donation Amount</label>
-                <input type="number" wire:model="donation_amount" min="800" max="100000"
+                <input type="number" wire:model="donation_amount"
                     class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white" />
                 @error('donation_amount')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
