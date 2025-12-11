@@ -128,13 +128,29 @@ class RegistrationCreate extends Component
         // }
 
         // Image Upload
+        // $path = null;
+
+        // if ($this->photo) {
+        //     // File name create
+        //     $fileName = 'user-'.time().'.'.$this->photo->getClientOriginalExtension();
+        //     // Store uploaded photo
+        //     $path = $this->photo->storeAs('photos', $fileName, 'public');
+        //     // Delete Livewire temporary file
+        //     if (file_exists($this->photo->getRealPath())) {
+        //         unlink($this->photo->getRealPath());
+        //     }
+        // }
+
+        // Image Upload
         $path = null;
 
         if ($this->photo) {
-            // File name create
-            $fileName = 'user-'.time().'.'.$this->photo->getClientOriginalExtension();
+            // Create file name
+            $fileName = 'participant-'.time().'.'.$this->photo->getClientOriginalExtension();
+
             // Store uploaded photo
-            $path = $this->photo->storeAs('photos', $fileName, 'public');
+            $path = $this->photo->storeAs('uploads/participants', $fileName, 'public');
+
             // Delete Livewire temporary file
             if (file_exists($this->photo->getRealPath())) {
                 unlink($this->photo->getRealPath());

@@ -3,6 +3,7 @@
 namespace App\Livewire\Backend\Donor;
 
 use App\Models\Donor;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -30,9 +31,9 @@ class DonorEdit extends Component
 
     public $note;
 
-    public $photo; // new upload
+    public $photo; // new uploaded photo
 
-    public $old_photo; // existing saved
+    public $old_photo; // existing saved photo
 
     public function mount($id)
     {
@@ -77,23 +78,27 @@ class DonorEdit extends Component
             'note' => $this->note,
         ];
 
-        // Handle New Photo Upload
-        // if ($this->photo) {
-        //     $fileName = 'donor-'.time().'.'.$this->photo->getClientOriginalExtension();
-        //     $path = $this->photo->storeAs('donors/photos', $fileName, 'public');
-        //     $data['photo'] = $path;
-        // }
-
+        // If new photo uploaded
         if ($this->photo) {
+
+            // Delete old photo
+            if ($this->donor->photo && Storage::disk('public')->exists($this->donor->photo)) {
+                Storage::disk('public')->delete($this->donor->photo);
+            }
+
+            // New file name
             $fileName = 'donor-'.time().'.'.$this->photo->getClientOriginalExtension();
-            $path = $this->photo->storeAs('donors/photos', $fileName, 'public');
-            $data['photo'] = $path;
+
+            // Store new photo
+            $data['photo'] = $this->photo->storeAs('uploads/donors', $fileName, 'public');
+
+            // Delete Livewire temporary file
             if (file_exists($this->photo->getRealPath())) {
                 unlink($this->photo->getRealPath());
             }
         }
 
-        // Update record
+        // Update DB record
         $this->donor->update($data);
 
         session()->flash('success', 'Donor updated successfully.');

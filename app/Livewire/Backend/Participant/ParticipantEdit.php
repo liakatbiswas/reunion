@@ -89,16 +89,37 @@ class ParticipantEdit extends Component
         $p = Registration::findOrFail($this->participant_id);
 
         // Handle new photo upload
+        // if ($this->new_photo) {
+        //     // Delete old photo
+        //     if ($p->photo && Storage::disk('public')->exists($p->photo)) {
+        //         Storage::disk('public')->delete($p->photo);
+        //     }
+        //     // Store new photo
+        //     $fileName = time().'.'.$this->new_photo->getClientOriginalExtension();
+        //     $this->new_photo->storeAs('uploads/participants', $fileName, 'public');
+        //     $p->photo = 'uploads/participants/'.$fileName;
+        //     // Delete Livewire temporary file
+        //     if (file_exists($this->new_photo->getRealPath())) {
+        //         unlink($this->new_photo->getRealPath());
+        //     }
+        // }
+
+        // Handle new photo upload
         if ($this->new_photo) {
-            // Delete old photo
+
+            // Delete old photo if exists
             if ($p->photo && Storage::disk('public')->exists($p->photo)) {
                 Storage::disk('public')->delete($p->photo);
             }
-            // Store new photo
-            $fileName = time().'.'.$this->new_photo->getClientOriginalExtension();
-            $this->new_photo->storeAs('uploads/participants', $fileName, 'public');
-            $p->photo = 'uploads/participants/'.$fileName;
-            // Delete Livewire temporary file
+
+            // Create new file name
+            $fileName = 'participant-'.time().'.'.$this->new_photo->getClientOriginalExtension();
+
+            // Store the new photo
+            $path = $this->new_photo->storeAs('uploads/participants', $fileName, 'public');
+            $p->photo = $path;
+
+            // Delete Livewire temporary temp file
             if (file_exists($this->new_photo->getRealPath())) {
                 unlink($this->new_photo->getRealPath());
             }

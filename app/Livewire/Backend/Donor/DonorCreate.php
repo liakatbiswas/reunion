@@ -45,17 +45,14 @@ class DonorCreate extends Component
             'note' => 'nullable',
         ]);
 
-        // // PHOTO Upload
-        // if ($this->photo) {
-        //     $fileName = 'donor-'.time().'.'.$this->photo->getClientOriginalExtension();
-        //     $data['photo'] = $this->photo->storeAs('donors/photos', $fileName, 'public');
-        // }
-
         // PHOTO Upload
         if ($this->photo) {
+
             $fileName = 'donor-'.time().'.'.$this->photo->getClientOriginalExtension();
+
             // Save to storage
-            $data['photo'] = $this->photo->storeAs('donors/photos', $fileName, 'public');
+            $data['photo'] = $this->photo->storeAs('uploads/donors', $fileName, 'public');
+
             // Delete Livewire temporary file
             if (file_exists($this->photo->getRealPath())) {
                 unlink($this->photo->getRealPath());
