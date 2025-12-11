@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ParticipantRegistrationController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\DonorController;
 use App\Http\Controllers\ProfileController;
@@ -34,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/1000', [TotalCalculationController::class, 'show1000'])->name('account.show1000');
 
     Route::resource('/donors', DonorController::class);
+    Route::get('/admins', [AdminController::class, 'index'])->name('admin.index');
 });
 
 require __DIR__.'/auth.php';
